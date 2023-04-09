@@ -7,13 +7,13 @@ import {
   readMovies,
   updateMovieId,
 } from "./logic";
-import { ensureMovieExist } from "./middlewares";
+import { ensureCategory, ensureMovieExist } from "./middlewares";
 
 const app: Application = express();
 app.use(json());
 
 app.post("/movies", createMovies);
-app.get("/movies", readMovies);
+app.get("/movies", ensureCategory, readMovies);
 app.get("/movies/:id", ensureMovieExist, readMovieId);
 app.patch("/movies/:id", ensureMovieExist, updateMovieId);
 app.delete("/movies/:id", ensureMovieExist, deleteMovieId);
