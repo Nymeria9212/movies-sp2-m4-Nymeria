@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "./database";
-import { TMovies } from "./interfaces";
+import { TMovies, TMoviesRequest } from "./interfaces";
 import format from "pg-format";
 
 const ensureMovieExist = async (
@@ -69,4 +69,32 @@ const ensureCategory = async (
   return response.status(200).json(queryResult2.rows);
 };
 
-export { ensureMovieExist, ensureCategory };
+const ensureName = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const { name }: TMoviesRequest = request.body;
+
+  const queryString: string = `
+      SELECT * FROM
+          movies
+      WHERE "name"=$1;
+  `;
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [name],
+  };
+
+  const queryResult: QueryResult<TMovies> = await client.query(queryConfig);
+
+  if (queryResult.rowCount > 0) {
+    return response.status(404).json({
+      error: "Movie name already exists!",
+    });
+  }
+
+  return next();
+};
+
+export { ensureMovieExist, ensureCategory, ensureName };
