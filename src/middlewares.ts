@@ -89,7 +89,7 @@ const ensureName = async (
   const queryResult: QueryResult<TMovies> = await client.query(queryConfig);
 
   if (queryResult.rowCount > 0) {
-    return response.status(404).json({
+    return response.status(409).json({
       error: "Movie name already exists!",
     });
   }
