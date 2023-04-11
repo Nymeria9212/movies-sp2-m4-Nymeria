@@ -22,7 +22,6 @@ const createMovies = async (
     Object.keys(moviesData),
     Object.values(moviesData)
   );
-  console.log(queryString);
 
   const queryResult: QueryResult<TMovies> = await client.query(queryString);
 
@@ -96,7 +95,6 @@ const deleteMovieId = async (
     text: queryString,
     values: [id],
   };
-  console.log(queryConfig);
 
   await client.query(queryConfig);
 
